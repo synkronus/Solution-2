@@ -1,0 +1,337 @@
+/* Enhanced Form Styles for PoliMarket React App */
+/* This file provides additional styling for better input and button padding */
+
+/* Form Container Enhancements */
+.enhanced-form-container {
+  padding: 1.5rem;
+  background: var(--surface-0);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced Field Groups */
+.enhanced-field-group {
+  margin-bottom: 1.5rem;
+}
+
+.enhanced-field-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Enhanced Field Labels */
+.enhanced-field-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.enhanced-field-label.required::after {
+  content: ' *';
+  color: var(--danger-color);
+  font-weight: 700;
+}
+
+/* Enhanced Input Wrapper */
+.enhanced-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Enhanced Input Base Styles */
+.enhanced-input,
+.enhanced-dropdown,
+.enhanced-textarea,
+.enhanced-number-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-color);
+  background: var(--surface-0);
+  transition: all 0.3s ease;
+  font-family: var(--font-family);
+}
+
+/* Enhanced Input Focus States */
+.enhanced-input:focus,
+.enhanced-dropdown:focus,
+.enhanced-textarea:focus,
+.enhanced-number-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: var(--surface-0);
+}
+
+/* Enhanced Input Hover States */
+.enhanced-input:hover:not(:disabled),
+.enhanced-dropdown:hover:not(:disabled),
+.enhanced-textarea:hover:not(:disabled),
+.enhanced-number-input:hover:not(:disabled) {
+  border-color: var(--surface-400);
+}
+
+/* Enhanced Input Disabled States */
+.enhanced-input:disabled,
+.enhanced-dropdown:disabled,
+.enhanced-textarea:disabled,
+.enhanced-number-input:disabled {
+  background: var(--surface-100);
+  color: var(--text-color-secondary);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Enhanced Textarea Specific */
+.enhanced-textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: var(--font-family);
+}
+
+/* Enhanced Button Base Styles */
+.enhanced-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  min-height: 48px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-family);
+  white-space: nowrap;
+}
+
+/* Enhanced Button Primary */
+.enhanced-button.primary {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.enhanced-button.primary:hover:not(:disabled) {
+  background: #2563eb;
+  border-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+/* Enhanced Button Secondary */
+.enhanced-button.secondary {
+  background: transparent;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.enhanced-button.secondary:hover:not(:disabled) {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+}
+
+/* Enhanced Button Success */
+.enhanced-button.success {
+  background: var(--success-color);
+  color: white;
+  border-color: var(--success-color);
+}
+
+.enhanced-button.success:hover:not(:disabled) {
+  background: #059669;
+  border-color: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+/* Enhanced Button Danger */
+.enhanced-button.danger {
+  background: var(--danger-color);
+  color: white;
+  border-color: var(--danger-color);
+}
+
+.enhanced-button.danger:hover:not(:disabled) {
+  background: #dc2626;
+  border-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+}
+
+/* Enhanced Button Text */
+.enhanced-button.text {
+  background: transparent;
+  color: var(--primary-color);
+  border-color: transparent;
+  padding: 8px 16px;
+  min-height: 40px;
+}
+
+.enhanced-button.text:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.1);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Enhanced Button Sizes */
+.enhanced-button.small {
+  padding: 8px 16px;
+  min-height: 36px;
+  font-size: 13px;
+}
+
+.enhanced-button.large {
+  padding: 16px 32px;
+  min-height: 56px;
+  font-size: 16px;
+}
+
+/* Enhanced Button Disabled */
+.enhanced-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Enhanced Button Loading */
+.enhanced-button.loading {
+  position: relative;
+  color: transparent;
+}
+
+.enhanced-button.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  color: white;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced Button Group */
+.enhanced-button-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.enhanced-button-group.vertical {
+  flex-direction: column;
+}
+
+.enhanced-button-group.center {
+  justify-content: center;
+}
+
+.enhanced-button-group.end {
+  justify-content: flex-end;
+}
+
+/* Enhanced Form Actions */
+.enhanced-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border-color);
+}
+
+/* Enhanced Field Error */
+.enhanced-field-error {
+  color: var(--danger-color);
+  font-size: 12px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.enhanced-field-error::before {
+  content: '⚠';
+  font-size: 14px;
+}
+
+/* Enhanced Field Success */
+.enhanced-field-success {
+  color: var(--success-color);
+  font-size: 12px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.enhanced-field-success::before {
+  content: '✓';
+  font-size: 14px;
+}
+
+/* Enhanced Field Help Text */
+.enhanced-field-help {
+  color: var(--text-color-secondary);
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .enhanced-form-container {
+    padding: 1rem;
+  }
+
+  .enhanced-input,
+  .enhanced-dropdown,
+  .enhanced-textarea,
+  .enhanced-number-input {
+    padding: 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 52px;
+  }
+
+  .enhanced-button {
+    padding: 14px 20px;
+    min-height: 52px;
+    font-size: 15px;
+  }
+
+  .enhanced-button.small {
+    padding: 12px 16px;
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  .enhanced-form-actions {
+    flex-direction: column;
+  }
+
+  .enhanced-button-group {
+    flex-direction: column;
+  }
+
+  .enhanced-button-group .enhanced-button {
+    width: 100%;
+  }
+}

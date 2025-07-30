@@ -1,0 +1,701 @@
+// Variables
+$primary-color: #3498db;
+$secondary-color: #2c3e50;
+$success-color: #27ae60;
+$warning-color: #f39c12;
+$danger-color: #e74c3c;
+$light-gray: #ecf0f1;
+$dark-gray: #34495e;
+$white: #ffffff;
+
+// Mixins
+@mixin card-shadow {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@mixin button-style($bg-color, $text-color: $white) {
+  background: $bg-color;
+  color: $text-color;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+}
+
+// Global Styles
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+// Header Styles
+.app-header {
+  background: rgba($white, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba($primary-color, 0.1);
+  padding: 20px 0;
+  @include card-shadow;
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .logo-section {
+      flex: 1;
+
+      .app-title {
+        color: $secondary-color;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+
+        .highlight {
+          color: $primary-color;
+        }
+      }
+
+      .app-subtitle {
+        color: $dark-gray;
+        font-size: 1.1rem;
+        margin: 8px 0 0 0;
+        font-weight: 300;
+      }
+    }
+
+    .health-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba($white, 0.8);
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba($primary-color, 0.2);
+
+      .health-icon {
+        font-size: 1.5rem;
+      }
+
+      .health-info {
+        .health-status {
+          font-weight: 600;
+          color: $secondary-color;
+        }
+
+        .health-details {
+          font-size: 0.85rem;
+          color: $dark-gray;
+        }
+      }
+
+      &.healthy {
+        border-color: $success-color;
+        background: rgba($success-color, 0.05);
+      }
+
+      &.degraded {
+        border-color: $danger-color;
+        background: rgba($danger-color, 0.05);
+      }
+
+      &.unknown {
+        border-color: $dark-gray;
+        background: rgba($dark-gray, 0.05);
+      }
+    }
+  }
+}
+
+// Navigation Styles
+.app-navigation {
+  background: rgba($white, 0.9);
+  padding: 15px 0;
+  margin: 20px 0;
+  border-radius: 12px;
+  @include card-shadow;
+
+  .nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    .nav-btn {
+      font-size: 1rem;
+      font-weight: 500;
+      min-width: 150px;
+
+      &.active {
+        background: $secondary-color !important;
+        border-color: $secondary-color !important;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+// Main Content Styles
+.app-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+// Dashboard Styles
+.dashboard-view {
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 30px;
+
+    h2 {
+      color: $white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    p {
+      color: rgba($white, 0.9);
+      font-size: 1.2rem;
+      margin: 0;
+    }
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
+  }
+
+  .fade-in {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  // Card Styles
+  .health-card, .rf-card, .architecture-card {
+    background: rgba($white, 0.98);
+    border-radius: 16px;
+    @include card-shadow;
+    transition: all 0.3s ease;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, rgba($primary-color, 0.05) 0%, rgba($secondary-color, 0.05) 100%);
+      border-bottom: 1px solid rgba($primary-color, 0.1);
+
+      h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: $secondary-color;
+
+        i {
+          margin-right: 8px;
+          color: $primary-color;
+        }
+      }
+    }
+  }
+
+  .health-card {
+    &.healthy {
+      border-left: 4px solid $success-color;
+    }
+
+    &.degraded {
+      border-left: 4px solid $danger-color;
+    }
+
+    &.unknown {
+      border-left: 4px solid $dark-gray;
+    }
+  }
+
+  .rf1-card {
+    border-left: 4px solid #9b59b6;
+  }
+
+  .rf3-card {
+    border-left: 4px solid #e67e22;
+  }
+
+  .architecture-card {
+    border-left: 4px solid $secondary-color;
+  }
+
+  // Feature List Styles
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+
+    li {
+      padding: 8px 0;
+      color: $dark-gray;
+      display: flex;
+      align-items: center;
+      font-size: 0.95rem;
+
+      i {
+        margin-right: 8px;
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  // Metrics and Stats
+  .health-metrics, .architecture-stats {
+    .metric, .stat {
+      text-align: center;
+
+      .metric-label, .stat-label {
+        display: block;
+        font-size: 0.85rem;
+        color: $dark-gray;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .metric-value, .stat-value {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: $secondary-color;
+
+        &.healthy {
+          color: $success-color;
+        }
+
+        &.issues {
+          color: $danger-color;
+        }
+      }
+    }
+  }
+
+  // Component Status
+  .components-list {
+    .component-status {
+      background: rgba($light-gray, 0.3);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+
+      .component-name {
+        font-weight: 500;
+        color: $secondary-color;
+      }
+    }
+  }
+
+  // API Info Section
+  .api-info-section {
+    margin-top: 30px;
+    background: rgba($white, 0.98);
+    border-radius: 16px;
+    @include card-shadow;
+
+    .api-details {
+      .api-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba($primary-color, 0.1);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .api-label {
+          font-weight: 500;
+          color: $secondary-color;
+
+          i {
+            margin-right: 8px;
+            color: $primary-color;
+          }
+        }
+
+        .api-value {
+          font-family: 'Courier New', monospace;
+          color: $dark-gray;
+
+          .api-link {
+            color: $primary-color;
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: underline;
+            }
+
+            i {
+              margin-left: 4px;
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// System Health Styles
+.system-health {
+  .health-status {
+    text-align: center;
+    margin-bottom: 20px;
+    
+    .health-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      
+      &.healthy { color: $success-color; }
+      &.error { color: $danger-color; }
+      &.loading { color: $primary-color; }
+    }
+    
+    .health-message {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: $secondary-color;
+    }
+  }
+  
+  .components-list {
+    .component-status {
+      background: rgba($white, 0.5);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      
+      .component-name {
+        font-weight: 500;
+        color: $secondary-color;
+      }
+    }
+  }
+}
+
+// Component View Styles
+.component-view {
+  background: rgba($white, 0.95);
+  border-radius: 12px;
+  padding: 20px;
+  @include card-shadow;
+}
+
+// Footer Styles
+.app-footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: rgba($white, 0.8);
+  font-size: 0.9rem;
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    p {
+      margin: 8px 0;
+    }
+  }
+
+  .footer-links {
+    margin-top: 15px;
+
+    a {
+      color: rgba($white, 0.9);
+      text-decoration: none;
+      margin: 0 15px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .app-header .header-content {
+    flex-direction: column;
+    gap: 20px;
+
+    .logo-section .app-title {
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    .health-indicator {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .app-navigation .nav-content {
+    flex-direction: column;
+    align-items: center;
+
+    .nav-btn {
+      width: 200px;
+    }
+  }
+
+  .dashboard-view .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-main {
+    padding: 0 15px 30px;
+  }
+
+  .dashboard-view .dashboard-header h2 {
+    font-size: 2rem;
+  }
+
+  .api-info-section .api-details .api-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+// PrimeNG Grid Support
+.p-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -0.5rem;
+  margin-left: -0.5rem;
+  margin-top: -0.5rem;
+}
+
+.p-col-4 {
+  flex: 0 0 33.3333%;
+  padding: 0.5rem;
+}
+
+.p-col-6 {
+  flex: 0 0 50%;
+  padding: 0.5rem;
+}
+
+// Loading States
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba($primary-color, 0.3);
+    border-top: 4px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Utility Classes
+.text-center { text-align: center; }
+.text-primary { color: $primary-color; }
+.text-secondary { color: $secondary-color; }
+.text-success { color: $success-color; }
+.text-warning { color: $warning-color; }
+.text-danger { color: $danger-color; }
+
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+
+.flex { display: flex; }
+.justify-content-between { justify-content: space-between; }
+.align-items-center { align-items: center; }
+
+// HR Login Section
+.hr-login-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .login-card {
+    max-width: 450px;
+    width: 100%;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-header {
+      text-align: center;
+      padding: 3rem 2rem 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      position: relative;
+
+      i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+        opacity: 0.9;
+      }
+
+      h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+
+      p {
+        margin: 0;
+        font-size: 1rem;
+        opacity: 0.9;
+        font-weight: 300;
+      }
+    }
+
+    .login-form {
+      padding: 2.5rem;
+
+      p {
+        margin-bottom: 2rem;
+        color: #666;
+        line-height: 1.6;
+        text-align: center;
+        font-size: 0.95rem;
+      }
+
+      .input-group {
+        margin-bottom: 2rem;
+
+        label {
+          display: block;
+          margin-bottom: 0.75rem;
+          font-weight: 600;
+          color: #333;
+          font-size: 0.95rem;
+        }
+
+        input {
+          width: 100%;
+          padding: 1rem;
+          border: 2px solid #e1e5e9;
+          border-radius: 10px;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+
+          &:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+          }
+        }
+      }
+
+      .login-button {
+        padding: 1rem 2rem !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3) !important;
+        }
+      }
+    }
+  }
+}
+
+// Navigation header with user info
+.nav-header {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+  }
+}

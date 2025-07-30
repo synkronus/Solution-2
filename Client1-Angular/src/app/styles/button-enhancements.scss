@@ -1,0 +1,350 @@
+/* Button Enhancement Utilities for PoliMarket Angular App */
+/* This file provides additional button styling utilities and helper classes */
+
+/* Button Spacing Utilities */
+.btn-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  
+  &.btn-group-vertical {
+    flex-direction: column;
+  }
+  
+  &.btn-group-center {
+    justify-content: center;
+  }
+  
+  &.btn-group-end {
+    justify-content: flex-end;
+  }
+  
+  &.btn-group-between {
+    justify-content: space-between;
+  }
+  
+  &.btn-group-tight {
+    gap: 6px;
+  }
+  
+  &.btn-group-loose {
+    gap: 20px;
+  }
+}
+
+/* Button Width Utilities */
+.btn-full-width {
+  width: 100% !important;
+}
+
+.btn-auto-width {
+  width: auto !important;
+}
+
+.btn-min-width {
+  min-width: 120px !important;
+}
+
+/* Button Padding Variations */
+.btn-padding-xs {
+  padding: 6px 12px !important;
+  min-height: 32px !important;
+  font-size: 12px !important;
+}
+
+.btn-padding-sm {
+  padding: 8px 16px !important;
+  min-height: 36px !important;
+  font-size: 13px !important;
+}
+
+.btn-padding-md {
+  padding: 12px 24px !important;
+  min-height: 48px !important;
+  font-size: 14px !important;
+}
+
+.btn-padding-lg {
+  padding: 16px 32px !important;
+  min-height: 56px !important;
+  font-size: 16px !important;
+}
+
+.btn-padding-xl {
+  padding: 20px 40px !important;
+  min-height: 64px !important;
+  font-size: 18px !important;
+}
+
+/* Icon Button Padding */
+.btn-icon-xs {
+  padding: 6px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+}
+
+.btn-icon-sm {
+  padding: 8px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+}
+
+.btn-icon-md {
+  padding: 12px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+}
+
+.btn-icon-lg {
+  padding: 16px !important;
+  min-width: 56px !important;
+  min-height: 56px !important;
+}
+
+.btn-icon-xl {
+  padding: 20px !important;
+  min-width: 64px !important;
+  min-height: 64px !important;
+}
+
+/* Button Border Radius Utilities */
+.btn-rounded-none {
+  border-radius: 0 !important;
+}
+
+.btn-rounded-sm {
+  border-radius: 4px !important;
+}
+
+.btn-rounded-md {
+  border-radius: 8px !important;
+}
+
+.btn-rounded-lg {
+  border-radius: 12px !important;
+}
+
+.btn-rounded-xl {
+  border-radius: 16px !important;
+}
+
+.btn-rounded-full {
+  border-radius: 50% !important;
+}
+
+/* Button Shadow Utilities */
+.btn-shadow-none {
+  box-shadow: none !important;
+  
+  &:hover:not(:disabled) {
+    box-shadow: none !important;
+  }
+}
+
+.btn-shadow-sm {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  
+  &:hover:not(:disabled) {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+}
+
+.btn-shadow-md {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  
+  &:hover:not(:disabled) {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+  }
+}
+
+.btn-shadow-lg {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+  
+  &:hover:not(:disabled) {
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15) !important;
+  }
+}
+
+/* Button Animation Utilities */
+.btn-no-transform {
+  &:hover:not(:disabled) {
+    transform: none !important;
+  }
+}
+
+.btn-scale-hover {
+  &:hover:not(:disabled) {
+    transform: scale(1.05) !important;
+  }
+}
+
+.btn-lift-hover {
+  &:hover:not(:disabled) {
+    transform: translateY(-4px) !important;
+  }
+}
+
+/* Button State Utilities */
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: btn-spin 1s linear infinite;
+    color: white;
+  }
+}
+
+@keyframes btn-spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Button Typography Utilities */
+.btn-font-light {
+  font-weight: 300 !important;
+}
+
+.btn-font-normal {
+  font-weight: 400 !important;
+}
+
+.btn-font-medium {
+  font-weight: 500 !important;
+}
+
+.btn-font-semibold {
+  font-weight: 600 !important;
+}
+
+.btn-font-bold {
+  font-weight: 700 !important;
+}
+
+.btn-font-extrabold {
+  font-weight: 800 !important;
+}
+
+.btn-uppercase {
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.btn-lowercase {
+  text-transform: lowercase !important;
+}
+
+.btn-capitalize {
+  text-transform: capitalize !important;
+}
+
+/* Button Color Utilities */
+.btn-gradient-primary {
+  background: linear-gradient(135deg, var(--primary-color), #2563eb) !important;
+  border-color: var(--primary-color) !important;
+  color: white !important;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  }
+}
+
+.btn-gradient-success {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  border-color: #10b981 !important;
+  color: white !important;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669, #047857) !important;
+  }
+}
+
+.btn-gradient-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  border-color: #ef4444 !important;
+  color: white !important;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  }
+}
+
+/* Button Icon Spacing */
+.btn-icon-left {
+  .p-button-icon {
+    margin-right: 8px !important;
+    margin-left: 0 !important;
+  }
+}
+
+.btn-icon-right {
+  .p-button-icon {
+    margin-left: 8px !important;
+    margin-right: 0 !important;
+  }
+}
+
+.btn-icon-only {
+  .p-button-icon {
+    margin: 0 !important;
+  }
+}
+
+/* Responsive Button Utilities */
+@media (max-width: 768px) {
+  .btn-mobile-full {
+    width: 100% !important;
+  }
+  
+  .btn-mobile-stack {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  
+  .btn-group-mobile {
+    flex-direction: column !important;
+    
+    .p-button {
+      width: 100% !important;
+    }
+  }
+}
+
+/* Button Focus Utilities */
+.btn-focus-ring {
+  &:focus-visible {
+    outline: 3px solid rgba(59, 130, 246, 0.5) !important;
+    outline-offset: 2px !important;
+  }
+}
+
+.btn-focus-none {
+  &:focus-visible {
+    outline: none !important;
+  }
+}
+
+/* Button Disabled State Utilities */
+.btn-disabled-opacity {
+  &:disabled {
+    opacity: 0.5 !important;
+  }
+}
+
+.btn-disabled-grayscale {
+  &:disabled {
+    filter: grayscale(100%) !important;
+    opacity: 0.7 !important;
+  }
+}

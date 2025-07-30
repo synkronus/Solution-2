@@ -1,0 +1,474 @@
+// Inventory Component Styles
+.inventory-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  .header-section {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--surface-0);
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+      .text-primary {
+        color: var(--primary-color);
+        margin-right: 0.5rem;
+      }
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-style: italic;
+    }
+  }
+
+  // Card Header Styling
+  .card-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-color);
+      margin: 0;
+
+      i {
+        margin-right: 0.5rem;
+        color: var(--primary-color);
+      }
+    }
+
+    p {
+      margin: 0.5rem 0 0 0;
+      color: var(--text-color-secondary);
+      font-size: 0.9rem;
+    }
+  }
+
+  // Form Styling
+  .availability-form,
+  .update-form {
+    .required-field {
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+      display: block;
+
+      i {
+        margin-right: 0.5rem;
+        color: var(--primary-color);
+      }
+
+      &::after {
+        content: ' *';
+        color: #e74c3c;
+        font-weight: bold;
+      }
+    }
+
+    .p-field {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+
+      .p-button {
+        min-width: 150px;
+      }
+    }
+  }
+
+  // Availability Result Styling
+  .availability-result {
+    .product-info {
+      h4 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 1rem;
+      }
+
+      .stock-details {
+        margin: 1rem 0;
+
+        .stock-metric {
+          text-align: center;
+          padding: 1rem;
+          background: var(--surface-50);
+          border-radius: var(--border-radius);
+          border: 1px solid var(--border-color);
+
+          .metric-label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-color-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 600;
+          }
+
+          .metric-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+          }
+        }
+      }
+
+      .consultation-date {
+        color: var(--text-color-secondary);
+        font-size: 0.85rem;
+        text-align: center;
+        margin-top: 1rem;
+
+        i {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+
+  // Quick Check Styling
+  .quick-check-section {
+    h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 1rem;
+    }
+
+    .product-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .quick-result {
+      .stock-badge {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+
+      .stock-status {
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--text-color-secondary);
+      }
+    }
+  }
+
+  // Update Result Styling
+  .update-result {
+    .update-details {
+      p {
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+
+        strong {
+          color: var(--text-color);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  // Alerts Styling
+  .alerts-list {
+    .alert-item {
+      .alert-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        .alert-date {
+          color: var(--text-color-secondary);
+          font-size: 0.85rem;
+        }
+      }
+
+      h5 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin: 0 0 0.5rem 0;
+      }
+
+      .alert-message {
+        color: var(--text-color-secondary);
+        margin-bottom: 1rem;
+        line-height: 1.5;
+      }
+
+      .alert-details {
+        font-size: 0.9rem;
+
+        strong {
+          color: var(--text-color);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  // Empty State
+  .empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+
+    i {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: var(--text-color-secondary);
+      font-style: italic;
+      font-size: 1.1rem;
+    }
+  }
+}
+
+// Custom PrimeNG Overrides for this component
+:host ::ng-deep {
+  // Panel styling for results
+  .success-panel {
+    .p-panel-header {
+      background: rgba(39, 174, 96, 0.1);
+      color: #27ae60;
+      border-color: #27ae60;
+    }
+
+    .p-panel-content {
+      border-color: #27ae60;
+    }
+  }
+
+  .error-panel {
+    .p-panel-header {
+      background: rgba(231, 76, 60, 0.1);
+      color: #e74c3c;
+      border-color: #e74c3c;
+    }
+
+    .p-panel-content {
+      border-color: #e74c3c;
+    }
+  }
+
+  // Card styling
+  .p-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+    background: var(--surface-0);
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .p-card-header {
+      background: var(--surface-50);
+      border-bottom: 1px solid var(--border-color);
+      border-radius: 12px 12px 0 0;
+    }
+  }
+
+  // Button styling
+  .p-button {
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &.p-button-primary {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    &.p-button-warning {
+      background: #f39c12;
+      border-color: #f39c12;
+      color: white;
+    }
+
+    &.p-button-secondary {
+      background: var(--surface-500);
+      border-color: var(--surface-500);
+      color: var(--surface-0);
+    }
+
+    &.p-button-outlined {
+      background: transparent;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+
+      &:hover:not(:disabled) {
+        background: var(--primary-color);
+        color: var(--primary-color-text);
+      }
+    }
+  }
+
+  // Input styling
+  .p-inputtext,
+  .p-dropdown,
+  .p-inputnumber input {
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease-in-out;
+
+    &:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &.ng-invalid.ng-touched {
+      border-color: #e74c3c;
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+  }
+
+  // Dropdown specific styling
+  .p-dropdown {
+    &:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .p-dropdown-label {
+      padding: 0.75rem;
+    }
+  }
+
+  // Tag styling
+  .p-tag {
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+
+    &.text-lg {
+      font-size: 1rem;
+      padding: 0.6rem 1rem;
+    }
+
+    &.p-tag-success {
+      background: rgba(39, 174, 96, 0.1);
+      color: #27ae60;
+      border: 1px solid #27ae60;
+    }
+
+    &.p-tag-warning {
+      background: rgba(243, 156, 18, 0.1);
+      color: #f39c12;
+      border: 1px solid #f39c12;
+    }
+
+    &.p-tag-danger {
+      background: rgba(231, 76, 60, 0.1);
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+    }
+  }
+
+  // Panel styling
+  .p-panel {
+    border-radius: var(--border-radius);
+
+    .p-panel-header {
+      font-weight: 600;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
+
+    .p-panel-content {
+      padding: 1.5rem;
+    }
+  }
+
+  // Toast styling
+  .p-toast .p-toast-message {
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .inventory-container {
+    padding: 1rem;
+
+    .header-section h1 {
+      font-size: 2rem;
+    }
+
+    .card-header-content {
+      flex-direction: column;
+      align-items: flex-start;
+
+      h3 {
+        font-size: 1.3rem;
+      }
+    }
+
+    .availability-form,
+    .update-form {
+      .form-actions {
+        flex-direction: column;
+
+        .p-button {
+          width: 100%;
+        }
+      }
+    }
+
+    .product-buttons {
+      flex-direction: column;
+
+      .p-button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Animation classes
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

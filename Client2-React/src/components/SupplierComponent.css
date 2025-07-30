@@ -1,0 +1,91 @@
+/* Supplier Component Styles */
+.supplier-container {
+  padding: 1rem;
+}
+
+.header-section h1 {
+  color: #2196F3;
+  margin-bottom: 0.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 100px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.stat-card i {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.stat-content h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.stat-content p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Responsive behavior - stack on smaller screens */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Confirmation Dialog Styling */
+.p-confirm-dialog {
+  .p-dialog-content {
+    padding: 1.5rem !important;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .p-dialog-footer {
+    padding: 1rem 1.5rem !important;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .p-confirm-dialog-message {
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .p-confirm-dialog-icon {
+    font-size: 1.5rem;
+    color: #f59e0b;
+  }
+}

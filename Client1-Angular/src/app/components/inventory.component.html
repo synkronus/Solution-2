@@ -1,0 +1,393 @@
+<!-- Toast Messages -->
+<p-toast></p-toast>
+
+<!-- Main Container -->
+<div class="inventory-container">
+  <!-- Header -->
+  <div class="header-section mb-4">
+    <h1 class="text-center">
+      <i class="pi pi-box text-primary"></i>
+      RF3: Gestión de Inventario
+    </h1>
+    <p class="text-center text-secondary">
+      Component-Based Software Engineering - Inventory Component
+    </p>
+  </div>
+
+  <!-- Stock Availability Check Card -->
+  <p-card class="mb-4 fade-in">
+    <ng-template pTemplate="header">
+      <div class="card-header-content">
+        <h3><i class="pi pi-search"></i> Consultar Disponibilidad de Stock</h3>
+        <p class="text-secondary">Verifique la disponibilidad de productos en el inventario</p>
+      </div>
+    </ng-template>
+
+    <form #availabilityForm="ngForm" (ngSubmit)="checkAvailability()" class="availability-form">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+          <label for="productId" class="required-field">
+            <i class="pi pi-barcode"></i> ID del Producto
+          </label>
+          <input 
+            pInputText 
+            id="productId"
+            name="productId"
+            [(ngModel)]="availabilityRequest.idProducto"
+            placeholder="Ej: PROD001"
+            required
+            #productId="ngModel"
+            [class.ng-invalid]="productId.invalid && productId.touched"
+          />
+          <small 
+            class="p-error" 
+            *ngIf="productId.invalid && productId.touched"
+          >
+            ID del producto es requerido
+          </small>
+        </div>
+
+        <div class="p-field p-col-12 p-md-6">
+          <label for="quantity" class="required-field">
+            <i class="pi pi-hashtag"></i> Cantidad Requerida
+          </label>
+          <p-inputNumber
+            id="quantity"
+            name="quantity"
+            [(ngModel)]="availabilityRequest.cantidadRequerida"
+            [min]="1"
+            [max]="9999"
+            placeholder="Ej: 10"
+            [required]="true"
+            #quantity="ngModel"
+            [class.ng-invalid]="quantity.invalid && quantity.touched"
+          ></p-inputNumber>
+          <small 
+            class="p-error" 
+            *ngIf="quantity.invalid && quantity.touched"
+          >
+            Cantidad debe ser mayor a 0
+          </small>
+        </div>
+      </div>
+
+      <div class="form-actions mt-3">
+        <p-button 
+          type="submit"
+          label="Consultar Disponibilidad"
+          icon="pi pi-search"
+          [disabled]="!availabilityForm.valid || isCheckingAvailability"
+          [loading]="isCheckingAvailability"
+          styleClass="p-button-primary"
+        ></p-button>
+      </div>
+    </form>
+
+    <!-- Availability Result -->
+    <div *ngIf="availabilityResult" class="availability-result mt-4 fade-in">
+      <p-panel 
+        [header]="availabilityResult.disponibleParaVenta ? '✅ Producto Disponible' : '❌ Producto No Disponible'"
+        [styleClass]="availabilityResult.disponibleParaVenta ? 'success-panel' : 'error-panel'"
+      >
+        <div class="product-info">
+          <h4>{{ availabilityResult.nombreProducto }}</h4>
+          
+          <div class="p-grid stock-details">
+            <div class="p-col-12 p-md-3">
+              <div class="stock-metric">
+                <span class="metric-label">Stock Actual</span>
+                <span class="metric-value">{{ availabilityResult.stockActual }}</span>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3">
+              <div class="stock-metric">
+                <span class="metric-label">Stock Disponible</span>
+                <span class="metric-value">{{ availabilityResult.stockDisponible }}</span>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3">
+              <div class="stock-metric">
+                <span class="metric-label">Stock Reservado</span>
+                <span class="metric-value">{{ availabilityResult.stockReservado }}</span>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3">
+              <div class="stock-metric">
+                <span class="metric-label">Estado</span>
+                <p-tag 
+                  [value]="availabilityResult.estado"
+                  [severity]="availabilityResult.estado === 'Disponible' ? 'success' : 'danger'"
+                ></p-tag>
+              </div>
+            </div>
+          </div>
+          
+          <p class="consultation-date mt-3">
+            <small><i class="pi pi-calendar"></i> Consultado: {{ availabilityResult.fechaConsulta | date:'medium' }}</small>
+          </p>
+        </div>
+      </p-panel>
+    </div>
+  </p-card>
+
+  <!-- Quick Stock Check Card -->
+  <p-card class="mb-4 fade-in">
+    <ng-template pTemplate="header">
+      <div class="card-header-content">
+        <h3><i class="pi pi-bolt"></i> Consulta Rápida de Stock</h3>
+        <p class="text-secondary">Acceso rápido a productos predefinidos</p>
+      </div>
+    </ng-template>
+
+    <div class="quick-check-section">
+      <h4>Productos Predefinidos:</h4>
+      <div class="product-buttons">
+        <p-button 
+          *ngFor="let product of predefinedProducts" 
+          [label]="product.label"
+          icon="pi pi-box"
+          (onClick)="quickStockCheck(product.value)"
+          [disabled]="isQuickChecking"
+          styleClass="p-button-outlined mr-2 mb-2"
+        ></p-button>
+      </div>
+      
+      <div *ngIf="quickStockResult" class="quick-result mt-3 fade-in">
+        <p-panel [header]="quickStockResult.nombreProducto">
+          <div class="text-center">
+            <div class="stock-badge mb-2">
+              <p-tag 
+                [value]="quickStockResult.stockActual + ' unidades'"
+                [severity]="getStockStatusSeverity(quickStockResult.stockActual)"
+                styleClass="text-lg"
+              ></p-tag>
+            </div>
+            <p class="stock-status">{{ quickStockResult.estado }}</p>
+          </div>
+        </p-panel>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Stock Update Card -->
+  <p-card class="mb-4 fade-in">
+    <ng-template pTemplate="header">
+      <div class="card-header-content">
+        <h3><i class="pi pi-pencil"></i> Actualizar Stock</h3>
+        <p class="text-secondary">Registre movimientos de inventario</p>
+      </div>
+    </ng-template>
+
+    <form #updateForm="ngForm" (ngSubmit)="updateStock()" class="update-form">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+          <label for="updateProductId" class="required-field">
+            <i class="pi pi-barcode"></i> ID del Producto
+          </label>
+          <input 
+            pInputText 
+            id="updateProductId"
+            name="updateProductId"
+            [(ngModel)]="stockUpdateRequest.idProducto"
+            placeholder="Ej: PROD001"
+            required
+            #updateProductId="ngModel"
+            [class.ng-invalid]="updateProductId.invalid && updateProductId.touched"
+          />
+          <small 
+            class="p-error" 
+            *ngIf="updateProductId.invalid && updateProductId.touched"
+          >
+            ID del producto es requerido
+          </small>
+        </div>
+
+        <div class="p-field p-col-12 p-md-6">
+          <label for="updateQuantity" class="required-field">
+            <i class="pi pi-hashtag"></i> Cantidad
+          </label>
+          <p-inputNumber
+            id="updateQuantity"
+            name="updateQuantity"
+            [(ngModel)]="stockUpdateRequest.cantidad"
+            [min]="1"
+            [max]="9999"
+            placeholder="Ej: 50"
+            [required]="true"
+            #updateQuantity="ngModel"
+            [class.ng-invalid]="updateQuantity.invalid && updateQuantity.touched"
+          ></p-inputNumber>
+          <small 
+            class="p-error" 
+            *ngIf="updateQuantity.invalid && updateQuantity.touched"
+          >
+            Cantidad es requerida
+          </small>
+        </div>
+      </div>
+
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+          <label for="movementType" class="required-field">
+            <i class="pi pi-arrows-h"></i> Tipo de Movimiento
+          </label>
+          <p-dropdown
+            id="movementType"
+            name="movementType"
+            [(ngModel)]="stockUpdateRequest.tipoMovimiento"
+            [options]="movementTypes"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Seleccione tipo..."
+            [required]="true"
+            #movementType="ngModel"
+            [class.ng-invalid]="movementType.invalid && movementType.touched"
+          ></p-dropdown>
+          <small 
+            class="p-error" 
+            *ngIf="movementType.invalid && movementType.touched"
+          >
+            Tipo de movimiento es requerido
+          </small>
+        </div>
+
+        <div class="p-field p-col-12 p-md-6">
+          <label for="responsible" class="required-field">
+            <i class="pi pi-user"></i> Usuario Responsable
+          </label>
+          <input 
+            pInputText 
+            id="responsible"
+            name="responsible"
+            [(ngModel)]="stockUpdateRequest.usuarioResponsable"
+            placeholder="Ej: admin"
+            required
+            #responsible="ngModel"
+            [class.ng-invalid]="responsible.invalid && responsible.touched"
+          />
+          <small 
+            class="p-error" 
+            *ngIf="responsible.invalid && responsible.touched"
+          >
+            Usuario responsable es requerido
+          </small>
+        </div>
+      </div>
+
+      <div class="p-fluid">
+        <div class="p-field">
+          <label for="reason" class="required-field">
+            <i class="pi pi-comment"></i> Motivo
+          </label>
+          <textarea 
+            pInputText 
+            id="reason"
+            name="reason"
+            [(ngModel)]="stockUpdateRequest.motivo"
+            placeholder="Describa el motivo del movimiento..."
+            rows="3"
+            required
+            #reason="ngModel"
+            [class.ng-invalid]="reason.invalid && reason.touched"
+          ></textarea>
+          <small 
+            class="p-error" 
+            *ngIf="reason.invalid && reason.touched"
+          >
+            Motivo es requerido
+          </small>
+        </div>
+      </div>
+
+      <div class="form-actions mt-3">
+        <p-button 
+          type="submit"
+          label="Actualizar Stock"
+          icon="pi pi-check"
+          [disabled]="!updateForm.valid || isUpdatingStock"
+          [loading]="isUpdatingStock"
+          styleClass="p-button-warning mr-2"
+        ></p-button>
+        
+        <p-button 
+          type="button"
+          label="Limpiar"
+          icon="pi pi-refresh"
+          (onClick)="resetUpdateForm()"
+          styleClass="p-button-secondary"
+        ></p-button>
+      </div>
+    </form>
+
+    <!-- Update Result -->
+    <div *ngIf="updateResult" class="update-result mt-4 fade-in">
+      <p-panel header="✅ Stock Actualizado Exitosamente" styleClass="success-panel">
+        <div class="update-details">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-6">
+              <p><strong>Stock Anterior:</strong> {{ updateResult.stockAnterior }} unidades</p>
+              <p><strong>Stock Nuevo:</strong> {{ updateResult.stockNuevo }} unidades</p>
+            </div>
+            <div class="p-col-12 p-md-6">
+              <p><strong>Movimiento ID:</strong> {{ updateResult.movimientoId }}</p>
+              <p><strong>Fecha:</strong> {{ updateResult.fechaOperacion | date:'medium' }}</p>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </p-card>
+
+  <!-- Stock Alerts Card -->
+  <p-card class="fade-in">
+    <ng-template pTemplate="header">
+      <div class="card-header-content">
+        <h3><i class="pi pi-bell"></i> Alertas de Stock ({{ stockAlerts.length }})</h3>
+        <p-button 
+          icon="pi pi-refresh"
+          label="Generar Alertas"
+          (onClick)="generateStockAlerts()"
+          [disabled]="isGeneratingAlerts"
+          [loading]="isGeneratingAlerts"
+          styleClass="p-button-outlined p-button-sm"
+        ></p-button>
+      </div>
+    </ng-template>
+
+    <div *ngIf="stockAlerts.length === 0 && !isGeneratingAlerts" class="empty-state">
+      <div class="text-center">
+        <i class="pi pi-check-circle" style="font-size: 3rem; color: var(--green-500);"></i>
+        <p>No hay alertas de stock pendientes.</p>
+      </div>
+    </div>
+
+    <div *ngIf="stockAlerts.length > 0" class="alerts-list">
+      <div *ngFor="let alert of stockAlerts; trackBy: trackByAlert" class="alert-item mb-3">
+        <p-panel>
+          <ng-template pTemplate="header">
+            <div class="alert-header">
+              <p-tag 
+                [value]="alert.tipoAlerta"
+                [severity]="getAlertSeverity(alert.tipoAlerta)"
+                styleClass="mr-2"
+              ></p-tag>
+              <span class="alert-date">{{ alert.fechaAlerta | date:'short' }}</span>
+            </div>
+          </ng-template>
+          
+          <h5>{{ alert.nombreProducto }}</h5>
+          <p class="alert-message">{{ alert.mensaje }}</p>
+          
+          <div class="p-grid alert-details mt-2">
+            <div class="p-col-6">
+              <strong>Stock Actual:</strong> {{ alert.stockActual }}
+            </div>
+            <div class="p-col-6">
+              <strong>Stock Mínimo:</strong> {{ alert.stockMinimo }}
+            </div>
+          </div>
+        </p-panel>
+      </div>
+    </div>
+  </p-card>
+</div>

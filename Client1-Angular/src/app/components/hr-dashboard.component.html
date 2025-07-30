@@ -1,0 +1,190 @@
+<div class="hr-dashboard">
+  <!-- Header -->
+  <div class="header-section">
+    <h1>
+      <i class="pi pi-users"></i>
+      RF1: Gestión de Autorización (RH)
+    </h1>
+    <p class="subtitle">Component-Based Software Engineering - Authorization Component</p>
+    
+    <!-- HR Login Section -->
+    <div class="hr-login" *ngIf="!currentHREmployee">
+      <div class="login-card">
+        <h3>Acceso de Recursos Humanos</h3>
+        <div class="p-field">
+          <label for="hrCode">Código de Empleado RH</label>
+          <input 
+            pInputText 
+            id="hrCode" 
+            [(ngModel)]="hrLoginCode" 
+            placeholder="Ej: HR001"
+            (keyup.enter)="loginHR()"
+            class="w-full"
+          />
+        </div>
+        <button 
+          pButton 
+          type="button" 
+          label="Iniciar Sesión" 
+          icon="pi pi-sign-in"
+          [loading]="isLoggingIn"
+          (click)="loginHR()"
+          class="w-full mt-3"
+        ></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Dashboard (shown after login) -->
+  <div class="dashboard-content" *ngIf="currentHREmployee">
+    <!-- User Info -->
+    <div class="user-info">
+      <p><strong>Empleado RH:</strong> {{currentHREmployee.nombre}} ({{currentHREmployee.id}})</p>
+      <button pButton type="button" label="Cerrar Sesión" icon="pi pi-sign-out" 
+              class="p-button-outlined" (click)="logoutHR()"></button>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <i class="pi pi-clock text-orange-500"></i>
+        <div class="stat-content">
+          <h3>{{pendingRequests.length}}</h3>
+          <p>Solicitudes Pendientes</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <i class="pi pi-check text-green-500"></i>
+        <div class="stat-content">
+          <h3>{{authorizedSellers.length}}</h3>
+          <p>Vendedores Autorizados</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <i class="pi pi-users text-blue-500"></i>
+        <div class="stat-content">
+          <h3>{{hrEmployees.length}}</h3>
+          <p>Empleados RH</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <i class="pi pi-chart-line text-purple-500"></i>
+        <div class="stat-content">
+          <h3>95%</h3>
+          <p>Tasa de Aprobación</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Requests -->
+    <div class="section-card">
+      <h3>
+        <i class="pi pi-clock"></i>
+        Solicitudes de Autorización Pendientes
+      </h3>
+      
+      <div class="requests-list" *ngIf="pendingRequests.length > 0; else noRequests">
+        <div class="request-item" *ngFor="let request of pendingRequests">
+          <div class="request-info">
+            <h4>{{request.nombreVendedor}}</h4>
+            <p><strong>Código:</strong> {{request.codigoVendedor}}</p>
+            <p><strong>Departamento:</strong> {{request.departamento}}</p>
+            <p><strong>Territorio:</strong> {{request.territorio || 'No especificado'}}</p>
+            <p><strong>Fecha Solicitud:</strong> {{request.fechaSolicitud | date:'short'}}</p>
+          </div>
+          <div class="request-actions">
+            <button 
+              pButton 
+              type="button" 
+              label="Aprobar" 
+              icon="pi pi-check"
+              class="p-button-success"
+              [loading]="isProcessing"
+              (click)="approveSeller(request)"
+            ></button>
+            <button 
+              pButton 
+              type="button" 
+              label="Rechazar" 
+              icon="pi pi-times"
+              class="p-button-danger p-button-outlined"
+              [loading]="isProcessing"
+              (click)="rejectSeller(request)"
+            ></button>
+          </div>
+        </div>
+      </div>
+      
+      <ng-template #noRequests>
+        <div class="empty-state">
+          <i class="pi pi-check-circle text-green-500"></i>
+          <p>No hay solicitudes pendientes</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Authorized Sellers -->
+    <div class="section-card">
+      <h3>
+        <i class="pi pi-users"></i>
+        Vendedores Autorizados
+      </h3>
+      
+      <div class="sellers-table" *ngIf="authorizedSellers.length > 0; else noSellers">
+        <div class="table-header">
+          <div class="col">Código</div>
+          <div class="col">Nombre</div>
+          <div class="col">Departamento</div>
+          <div class="col">Fecha Autorización</div>
+          <div class="col">Estado</div>
+          <div class="col">Acciones</div>
+        </div>
+        <div class="table-row" *ngFor="let seller of authorizedSellers">
+          <div class="col">{{seller.codigoVendedor}}</div>
+          <div class="col">{{seller.nombreVendedor}}</div>
+          <div class="col">{{seller.departamento}}</div>
+          <div class="col">{{seller.fechaAutorizacion | date:'short'}}</div>
+          <div class="col">
+            <span class="status-badge" [class.active]="seller.activo" [class.inactive]="!seller.activo">
+              {{seller.activo ? 'Activo' : 'Inactivo'}}
+            </span>
+          </div>
+          <div class="col">
+            <button 
+              pButton 
+              type="button" 
+              [icon]="seller.activo ? 'pi pi-ban' : 'pi pi-check'"
+              [label]="seller.activo ? 'Desactivar' : 'Activar'"
+              [class]="seller.activo ? 'p-button-warning' : 'p-button-success'"
+              class="p-button-sm"
+              (click)="toggleSellerStatus(seller)"
+            ></button>
+          </div>
+        </div>
+      </div>
+      
+      <ng-template #noSellers>
+        <div class="empty-state">
+          <i class="pi pi-user-plus text-blue-500"></i>
+          <p>No hay vendedores autorizados</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-card">
+      <h3>
+        <i class="pi pi-cog"></i>
+        Acciones Rápidas
+      </h3>
+      <div class="quick-actions">
+        <button pButton type="button" label="Generar Reporte" icon="pi pi-file-pdf" class="p-button-outlined"></button>
+        <button pButton type="button" label="Exportar Datos" icon="pi pi-download" class="p-button-outlined"></button>
+        <button pButton type="button" label="Configuración" icon="pi pi-cog" class="p-button-outlined"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<p-confirmDialog></p-confirmDialog>

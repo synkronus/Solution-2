@@ -1,0 +1,265 @@
+<div class="inventory-dashboard">
+  <!-- Header -->
+  <div class="header-section">
+    <h1>
+      <i class="pi pi-box"></i>
+      RF3: Gestión de Inventario (Bodega)
+    </h1>
+    <p class="subtitle">Component-Based Software Engineering - Inventory Component</p>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <i class="pi pi-box text-blue-500"></i>
+      <div class="stat-content">
+        <h3>{{products.length}}</h3>
+        <p>Productos Totales</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <i class="pi pi-exclamation-triangle text-orange-500"></i>
+      <div class="stat-content">
+        <h3>{{stockAlerts.length}}</h3>
+        <p>Alertas de Stock</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <i class="pi pi-shopping-cart text-green-500"></i>
+      <div class="stat-content">
+        <h3>{{purchaseOrders.length}}</h3>
+        <p>Órdenes de Compra</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <i class="pi pi-dollar text-purple-500"></i>
+      <div class="stat-content">
+        <h3>${{getTotalInventoryValue() | number:'1.0-0'}}</h3>
+        <p>Valor Inventario</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="section-card">
+    <h3>
+      <i class="pi pi-cog"></i>
+      Acciones Rápidas
+    </h3>
+    <div class="quick-actions">
+      <button pButton type="button" label="Nuevo Producto" icon="pi pi-plus" 
+              (click)="showAddProduct = true"></button>
+      <button pButton type="button" label="Ajuste de Inventario" icon="pi pi-pencil" 
+              class="p-button-outlined" (click)="adjustStock('')"></button>
+      <button pButton type="button" label="Generar Orden de Compra" icon="pi pi-shopping-cart" 
+              class="p-button-outlined" (click)="generatePurchaseOrder()"></button>
+      <button pButton type="button" label="Reporte de Inventario" icon="pi pi-file-pdf" 
+              class="p-button-outlined"></button>
+    </div>
+  </div>
+
+  <!-- Stock Alerts -->
+  <div class="section-card" *ngIf="stockAlerts.length > 0">
+    <h3>
+      <i class="pi pi-exclamation-triangle text-orange-500"></i>
+      Alertas de Stock
+    </h3>
+    <div class="alerts-list">
+      <div class="alert-item" *ngFor="let alert of stockAlerts" 
+           [class]="'priority-' + alert.prioridad.toLowerCase()">
+        <div class="alert-info">
+          <h4>{{alert.nombreProducto}}</h4>
+          <p><strong>{{alert.tipo}}</strong></p>
+          <p>Stock Actual: {{alert.stockActual}} | Mínimo: {{alert.stockMinimo}}</p>
+          <p class="alert-date">{{alert.fechaAlerta | date:'short'}}</p>
+        </div>
+        <div class="alert-actions">
+          <button pButton type="button" label="Crear Orden" icon="pi pi-shopping-cart" 
+                  class="p-button-sm" (click)="createPurchaseOrderForProduct(alert.productoId)"></button>
+          <button pButton type="button" label="Ajustar" icon="pi pi-pencil" 
+                  class="p-button-sm p-button-outlined" (click)="adjustStock(alert.productoId)"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Catalog -->
+  <div class="section-card">
+    <h3>
+      <i class="pi pi-list"></i>
+      Catálogo de Productos
+    </h3>
+    
+    <!-- Filters -->
+    <div class="filters">
+      <div class="p-field">
+        <label for="categoryFilter">Categoría</label>
+        <p-dropdown
+          id="categoryFilter"
+          [(ngModel)]="selectedCategory"
+          [options]="getCategoryOptions()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccionar categoría"
+          [showClear]="true"
+          styleClass="w-full"
+          (ngModelChange)="filterProducts()">
+        </p-dropdown>
+      </div>
+      <div class="p-field">
+        <label for="stockFilter">Estado de Stock</label>
+        <p-dropdown
+          id="stockFilter"
+          [(ngModel)]="selectedStockStatus"
+          [options]="getStockStatusOptions()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccionar estado"
+          [showClear]="true"
+          styleClass="w-full"
+          (ngModelChange)="filterProducts()">
+        </p-dropdown>
+      </div>
+    </div>
+
+    <!-- Products Table -->
+    <p-table
+      [value]="filteredProducts"
+      [paginator]="true"
+      [rows]="5"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
+      [rowsPerPageOptions]="[5,10,20]"
+      styleClass="p-datatable-striped"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="id">
+            Código <p-sortIcon field="id"></p-sortIcon>
+          </th>
+          <th pSortableColumn="nombre">
+            Nombre <p-sortIcon field="nombre"></p-sortIcon>
+          </th>
+          <th pSortableColumn="categoria">
+            Categoría <p-sortIcon field="categoria"></p-sortIcon>
+          </th>
+          <th pSortableColumn="stockActual">
+            Stock <p-sortIcon field="stockActual"></p-sortIcon>
+          </th>
+          <th pSortableColumn="precio">
+            Precio <p-sortIcon field="precio"></p-sortIcon>
+          </th>
+          <th>Proveedor</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+        <tr [class.low-stock]="product.stockActual <= product.stockMinimo">
+          <td>{{product.id}}</td>
+          <td>{{product.nombre}}</td>
+          <td>{{product.categoria}}</td>
+          <td>
+            <span class="stock-indicator"
+                  [class.normal]="product.stockActual > product.stockMinimo"
+                  [class.low]="product.stockActual <= product.stockMinimo && product.stockActual > 0"
+                  [class.empty]="product.stockActual === 0">
+              {{product.stockActual}} / {{product.stockMinimo}}
+            </span>
+          </td>
+          <td>${{product.precio | number:'1.0-0'}}</td>
+          <td>{{product.proveedor}}</td>
+          <td>
+            <span class="status-badge" [class.active]="product.activo" [class.inactive]="!product.activo">
+              {{product.activo ? 'Activo' : 'Inactivo'}}
+            </span>
+          </td>
+          <td>
+            <button pButton type="button" icon="pi pi-pencil" class="p-button-sm p-button-outlined"
+                    (click)="editProduct(product)"></button>
+            <button pButton type="button" icon="pi pi-eye" class="p-button-sm p-button-outlined"
+                    (click)="viewMovements(product.id)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Recent Movements -->
+  <div class="section-card">
+    <h3>
+      <i class="pi pi-history"></i>
+      Movimientos Recientes
+    </h3>
+    <div class="movements-list">
+      <div class="movement-item" *ngFor="let movement of recentMovements">
+        <div class="movement-info">
+          <h4>{{movement.nombreProducto}}</h4>
+          <p><strong>{{movement.tipo}}</strong> - {{movement.cantidad}} unidades</p>
+          <p>{{movement.motivo}}</p>
+          <p class="movement-date">{{movement.fecha | date:'short'}} - {{movement.usuario}}</p>
+        </div>
+        <div class="movement-type" [class]="movement.tipo.toLowerCase()">
+          <i class="pi" [class.pi-arrow-up]="movement.tipo === 'Entrada'" 
+             [class.pi-arrow-down]="movement.tipo === 'Salida'"
+             [class.pi-pencil]="movement.tipo === 'Ajuste'"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purchase Orders -->
+  <div class="section-card">
+    <h3>
+      <i class="pi pi-shopping-cart"></i>
+      Órdenes de Compra
+    </h3>
+    <div class="orders-list">
+      <div class="order-item" *ngFor="let order of purchaseOrders">
+        <div class="order-info">
+          <h4>Orden #{{order.id}}</h4>
+          <p><strong>Proveedor:</strong> {{order.proveedor}}</p>
+          <p><strong>Productos:</strong> {{order.productos.length}} items</p>
+          <p><strong>Total:</strong> ${{order.total | number:'1.0-0'}}</p>
+          <p class="order-date">{{order.fechaCreacion | date:'short'}}</p>
+        </div>
+        <div class="order-status">
+          <span class="status-badge" [class]="order.estado.toLowerCase()">
+            {{order.estado}}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Product Dialog -->
+<p-dialog header="Nuevo Producto" [(visible)]="showAddProduct" [modal]="true" [style]="{width: '500px'}" styleClass="custom-modal">
+  <div class="modal-content">
+    <div class="p-field">
+      <label for="productName">Nombre del Producto</label>
+      <input pInputText id="productName" [(ngModel)]="newProduct.nombre" class="w-full" />
+    </div>
+    <div class="p-field">
+      <label for="productCategory">Categoría</label>
+      <input pInputText id="productCategory" [(ngModel)]="newProduct.categoria" class="w-full" />
+    </div>
+    <div class="p-field">
+      <label for="productPrice">Precio</label>
+      <p-inputNumber id="productPrice" [(ngModel)]="newProduct.precio" mode="currency" currency="COP" locale="es-CO" class="w-full"></p-inputNumber>
+    </div>
+    <div class="p-field">
+      <label for="productStock">Stock Inicial</label>
+      <p-inputNumber id="productStock" [(ngModel)]="newProduct.stockActual" class="w-full"></p-inputNumber>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="modal-footer">
+      <button pButton type="button" label="Cancelar" class="p-button-outlined"
+              (click)="showAddProduct = false"></button>
+      <button pButton type="button" label="Crear Producto" (click)="addProduct()"></button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,247 @@
+/* Sales Component Styles */
+.sales-container {
+  padding: 1rem;
+}
+
+.header-section h1 {
+  color: #2196F3;
+  margin-bottom: 0.5rem;
+}
+
+/* Compact Logout Button Styling */
+.compact-logout-btn {
+  min-width: 40px !important;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 8px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
+  transition: all 0.3s ease !important;
+}
+
+.compact-logout-btn:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.compact-logout-btn:focus {
+  outline: 2px solid #2196F3 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2) !important;
+}
+
+.compact-logout-btn .p-button-icon {
+  margin: 0 !important;
+  font-size: 16px !important;
+}
+
+/* Header layout improvements */
+.header-section .flex {
+  gap: 1rem;
+}
+
+.header-section .flex-grow-1 {
+  flex: 1;
+  min-width: 0; /* Allows text to wrap if needed */
+}
+
+.header-section .flex-shrink-0 {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0.25rem; /* Slight top alignment adjustment */
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .header-section .flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+
+  .header-section .flex-shrink-0 {
+    align-self: flex-end;
+    padding-top: 0;
+  }
+
+  .compact-logout-btn {
+    min-width: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 10px !important;
+  }
+
+  .compact-logout-btn .p-button-icon {
+    font-size: 18px !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .compact-logout-btn {
+    border-width: 2px !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .compact-logout-btn {
+    transition: none !important;
+  }
+
+  .compact-logout-btn:hover {
+    transform: none !important;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+  min-width: 0; /* Prevent grid overflow */
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 100px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-width: 0; /* Prevent flex item overflow */
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.stat-card i {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.stat-content {
+  min-width: 0; /* Allow text to wrap if needed */
+}
+
+.stat-content h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.stat-content p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Keep cards in single row but make them more compact on smaller screens */
+@media (max-width: 768px) {
+  .stats-grid {
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+    min-height: 80px;
+  }
+
+  .stat-card i {
+    font-size: 1.5rem;
+  }
+
+  .stat-content h3 {
+    font-size: 1.2rem;
+  }
+
+  .stat-content p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    gap: 0.25rem;
+  }
+
+  .stat-card {
+    padding: 0.75rem;
+    min-height: 70px;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .stat-card i {
+    font-size: 1.2rem;
+  }
+
+  .stat-content h3 {
+    font-size: 1rem;
+  }
+
+  .stat-content p {
+    font-size: 0.7rem;
+  }
+}
+
+/* Sales Metrics Grid - Always keep in single row */
+.sales-metrics-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 1rem;
+}
+
+.sales-metrics-grid .col-3 {
+  width: 100% !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* Responsive adjustments for sales metrics - keep in row but make more compact */
+@media (max-width: 768px) {
+  .sales-metrics-grid {
+    gap: 0.5rem;
+  }
+
+  .sales-metrics-grid .col-3 > div {
+    padding: 0.75rem !important;
+  }
+
+  .sales-metrics-grid .text-2xl {
+    font-size: 1.25rem !important;
+  }
+
+  .sales-metrics-grid .text-sm {
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .sales-metrics-grid {
+    gap: 0.25rem;
+  }
+
+  .sales-metrics-grid .col-3 > div {
+    padding: 0.5rem !important;
+  }
+
+  .sales-metrics-grid .text-2xl {
+    font-size: 1rem !important;
+  }
+
+  .sales-metrics-grid .text-sm {
+    font-size: 0.65rem !important;
+  }
+}

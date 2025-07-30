@@ -1,0 +1,341 @@
+<!-- Toast Messages -->
+<p-toast></p-toast>
+
+<!-- Main Application Container -->
+<div class="app-container">
+  <!-- Header (only shown when HR user is logged in) -->
+  <header class="app-header" *ngIf="currentHRUser">
+    <div class="header-content">
+      <div class="logo-section">
+        <h1 class="app-title">🏪 {{ title }}</h1>
+        <p class="app-subtitle">Component-Based Software Engineering Implementation</p>
+      </div>
+
+      <!-- System Health Indicator -->
+      <div class="health-indicator" [ngClass]="getHealthStatusClass()">
+        <div class="health-icon">
+          <p-progressSpinner
+            *ngIf="isLoadingHealth"
+            styleClass="w-2rem h-2rem"
+            strokeWidth="4"
+          ></p-progressSpinner>
+          <span *ngIf="!isLoadingHealth && systemHealth?.isHealthy">✅</span>
+          <span *ngIf="!isLoadingHealth && !systemHealth?.isHealthy">⚠️</span>
+          <span *ngIf="!isLoadingHealth && !systemHealth">❌</span>
+        </div>
+        <div class="health-info">
+          <div class="health-status">
+            {{ isLoadingHealth ? 'Checking...' : (systemHealth?.overallStatus || 'Unknown') }}
+          </div>
+          <div class="health-details" *ngIf="systemHealth">
+            {{ getComponentHealthCount().healthy }}/{{ getComponentHealthCount().total }} Components Healthy
+          </div>
+        </div>
+        <p-button
+          icon="pi pi-refresh"
+          (onClick)="loadSystemHealth()"
+          [disabled]="isLoadingHealth"
+          [loading]="isLoadingHealth"
+          styleClass="p-button-rounded p-button-text p-button-sm"
+          pTooltip="Refresh System Health"
+        ></p-button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HR Login Section (shown when not logged in) -->
+  <div class="hr-login-section" *ngIf="!currentHRUser">
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <i class="pi pi-lock"></i>
+          <h2>Acceso Restringido</h2>
+          <p>Solo Personal RH</p>
+        </div>
+
+        <div class="login-form">
+          <p>Esta aplicación está destinada exclusivamente para el personal de Recursos Humanos.</p>
+
+          <div class="input-group">
+            <label for="hrCode">Código de Empleado RH</label>
+            <input
+              pInputText
+              id="hrCode"
+              [(ngModel)]="hrLoginCode"
+              placeholder="Ej: HR001, HR002, HR003"
+              (keyup.enter)="loginHR()"
+              class="w-full"
+            />
+          </div>
+
+          <p-button
+            label="Iniciar Sesión"
+            icon="pi pi-sign-in"
+            [loading]="isLoggingIn"
+            (onClick)="loginHR()"
+            styleClass="w-full login-button"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation (only shown after HR login) -->
+  <nav class="app-navigation" *ngIf="currentHRUser">
+    <div class="nav-header">
+      <div class="user-info">
+        <i class="pi pi-user"></i>
+        <span>{{currentHRUser.nombre}} ({{currentHRUser.id}})</span>
+        <p-button
+          label="Cerrar Sesión"
+          icon="pi pi-sign-out"
+          (onClick)="logoutHR()"
+          styleClass="p-button-outlined p-button-sm"
+        ></p-button>
+      </div>
+    </div>
+
+    <div class="nav-content">
+      <p-button
+        label="Dashboard"
+        icon="pi pi-chart-bar"
+        [styleClass]="'nav-btn ' + (currentView === 'dashboard' ? 'active' : '')"
+        (onClick)="switchView('dashboard')"
+      ></p-button>
+      <p-button
+        label="RF1: Gestión de Autorización (RH)"
+        icon="pi pi-users"
+        [styleClass]="'nav-btn ' + (currentView === 'authorization' ? 'active' : '')"
+        (onClick)="switchView('authorization')"
+      ></p-button>
+
+      <p-button
+        label="RF3: Inventory"
+        icon="pi pi-box"
+        [styleClass]="'nav-btn ' + (currentView === 'inventory-dashboard' ? 'active' : '')"
+        (onClick)="switchView('inventory-dashboard')"
+      ></p-button>
+      <p-button
+        label="RF5: Suppliers"
+        icon="pi pi-building"
+        [styleClass]="'nav-btn ' + (currentView === 'suppliers' ? 'active' : '')"
+        (onClick)="switchView('suppliers')"
+      ></p-button>
+
+
+    </div>
+  </nav>
+
+  <!-- Main Content Area (only shown when HR user is logged in) -->
+  <main class="app-main" *ngIf="currentHRUser">
+    <!-- Dashboard View -->
+    <div *ngIf="currentView === 'dashboard'" class="dashboard-view">
+      <div class="dashboard-header">
+        <h2>🏠 System Dashboard</h2>
+        <p>Overview of PoliMarket CBSE System Components</p>
+      </div>
+
+      <!-- System Overview Cards -->
+      <div class="overview-grid">
+        <!-- System Health Card -->
+        <p-card styleClass="health-card fade-in" [ngClass]="getHealthStatusClass()">
+          <ng-template pTemplate="header">
+            <div class="card-header-content">
+              <h3><i class="pi pi-heart"></i> System Health</h3>
+              <p-tag
+                [value]="systemHealth?.overallStatus || 'Unknown'"
+                [severity]="systemHealth?.isHealthy ? 'success' : 'danger'"
+              ></p-tag>
+            </div>
+          </ng-template>
+
+          <div class="health-metrics" *ngIf="systemHealth">
+            <div class="p-grid">
+              <div class="p-col-4">
+                <div class="metric text-center">
+                  <span class="metric-label">Components</span>
+                  <span class="metric-value">{{ getComponentHealthCount().total }}</span>
+                </div>
+              </div>
+              <div class="p-col-4">
+                <div class="metric text-center">
+                  <span class="metric-label">Healthy</span>
+                  <span class="metric-value healthy">{{ getComponentHealthCount().healthy }}</span>
+                </div>
+              </div>
+              <div class="p-col-4">
+                <div class="metric text-center">
+                  <span class="metric-label">Issues</span>
+                  <span class="metric-value issues">{{ getComponentHealthCount().total - getComponentHealthCount().healthy }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p-divider *ngIf="systemHealth?.componentsHealth"></p-divider>
+
+          <div class="components-list" *ngIf="systemHealth?.componentsHealth">
+            <div
+              *ngFor="let component of (getAngularAppComponents() | keyvalue)"
+              class="component-status flex justify-content-between align-items-center mb-2"
+            >
+              <span class="component-name">{{ component.value.componentName }}</span>
+              <p-tag
+                [value]="component.value.isHealthy ? 'Healthy' : 'Error'"
+                [severity]="component.value.isHealthy ? 'success' : 'danger'"
+              ></p-tag>
+            </div>
+          </div>
+        </p-card>
+
+        <!-- RF1 Authorization Card -->
+        <p-card styleClass="rf-card rf1-card fade-in">
+          <ng-template pTemplate="header">
+            <div class="card-header-content">
+              <h3><i class="pi pi-shield"></i> RF1: Authorization</h3>
+              <p-tag value="Active" severity="success"></p-tag>
+            </div>
+          </ng-template>
+
+          <p>Seller authorization and HR management system</p>
+          <ul class="feature-list">
+            <li><i class="pi pi-check text-green-500"></i> Seller Authorization</li>
+            <li><i class="pi pi-check text-green-500"></i> Authorization Validation</li>
+            <li><i class="pi pi-check text-green-500"></i> HR Employee Management</li>
+            <li><i class="pi pi-check text-green-500"></i> Permission Control</li>
+          </ul>
+
+          <ng-template pTemplate="footer">
+            <p-button
+              label="Open HR Management"
+              icon="pi pi-arrow-right"
+              (onClick)="switchView('authorization')"
+              styleClass="w-full"
+            ></p-button>
+          </ng-template>
+        </p-card>
+
+        <!-- RF3 Inventory Card -->
+        <p-card styleClass="rf-card rf3-card fade-in">
+          <ng-template pTemplate="header">
+            <div class="card-header-content">
+              <h3><i class="pi pi-box"></i> RF3: Inventory</h3>
+              <p-tag value="Active" severity="success"></p-tag>
+            </div>
+          </ng-template>
+
+          <p>Inventory management and stock control system</p>
+          <ul class="feature-list">
+            <li><i class="pi pi-check text-green-500"></i> Stock Availability Check</li>
+            <li><i class="pi pi-check text-green-500"></i> Inventory Updates</li>
+            <li><i class="pi pi-check text-green-500"></i> Stock Alerts</li>
+            <li><i class="pi pi-check text-green-500"></i> Movement Tracking</li>
+          </ul>
+
+          <ng-template pTemplate="footer">
+            <p-button
+              label="Open Inventory"
+              icon="pi pi-arrow-right"
+              (onClick)="switchView('inventory-dashboard')"
+              styleClass="w-full"
+            ></p-button>
+          </ng-template>
+        </p-card>
+
+        <!-- Architecture Info Card -->
+        <!-- <p-card styleClass="architecture-card fade-in">
+          <ng-template pTemplate="header">
+            <div class="card-header-content">
+              <h3><i class="pi pi-cog"></i> CBSE Architecture</h3>
+              <p-tag value="Implemented" severity="success"></p-tag>
+            </div>
+          </ng-template>
+
+          <p>Component-Based Software Engineering principles applied</p>
+          <ul class="feature-list">
+            <li><i class="pi pi-check text-green-500"></i> Separation of Concerns</li>
+            <li><i class="pi pi-check text-green-500"></i> Interface-Based Design</li>
+            <li><i class="pi pi-check text-green-500"></i> Loose Coupling</li>
+            <li><i class="pi pi-check text-green-500"></i> High Reusability</li>
+          </ul>
+
+          <p-divider></p-divider>
+
+          <div class="architecture-stats">
+            <div class="p-grid">
+              <div class="p-col-6">
+                <div class="stat text-center">
+                  <span class="stat-value">4</span>
+                  <span class="stat-label">Components</span>
+                </div>
+              </div>
+              <div class="p-col-6">
+                <div class="stat text-center">
+                  <span class="stat-value">27</span>
+                  <span class="stat-label">Endpoints</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-card> -->
+      </div>
+
+      <!-- API Information -->
+      <p-card styleClass="api-info-section fade-in">
+        <ng-template pTemplate="header">
+          <div class="card-header-content">
+            <h3><i class="pi pi-link"></i> API Connection Information</h3>
+          </div>
+        </ng-template>
+
+        <div class="api-details">
+          <div class="api-item">
+            <span class="api-label"><i class="pi pi-server"></i> Base URL:</span>
+            <span class="api-value">http://localhost:5001/api</span>
+          </div>
+          <div class="api-item">
+            <span class="api-label"><i class="pi pi-book"></i> Swagger UI:</span>
+            <span class="api-value">
+              <a href="http://localhost:5001" target="_blank" class="api-link">
+                http://localhost:5001 <i class="pi pi-external-link"></i>
+              </a>
+            </span>
+          </div>
+          <div class="api-item">
+            <span class="api-label"><i class="pi pi-heart"></i> Health Check:</span>
+            <span class="api-value">
+              <a href="http://localhost:5001/api/Integracion/health" target="_blank" class="api-link">
+                /api/Integracion/health <i class="pi pi-external-link"></i>
+              </a>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+
+
+    <!-- Inventory Dashboard View -->
+    <div *ngIf="currentView === 'inventory-dashboard'" class="component-view">
+      <app-inventory-dashboard></app-inventory-dashboard>
+    </div>
+
+    <!-- Authorization View -->
+    <div *ngIf="currentView === 'authorization'" class="component-view">
+      <app-authorization></app-authorization>
+    </div>
+
+    <!-- Supplier Management View -->
+    <div *ngIf="currentView === 'suppliers'" class="component-view">
+      <app-supplier-management></app-supplier-management>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <p>&copy; 2024 PoliMarket CBSE - Component-Based Software Engineering Implementation</p>
+      <p>Angular Client consuming RF1 (Authorization) and RF3 (Inventory) components</p>
+    </div>
+  </footer>
+</div>

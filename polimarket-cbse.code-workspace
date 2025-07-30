@@ -1,0 +1,99 @@
+{
+    "folders": [
+        {
+            "name": "🔧 Backend (.NET)",
+            "path": "./Backend-CBSE"
+        },
+        {
+            "name": "🅰️ Angular Client",
+            "path": "./Client1-Angular"
+        },
+        {
+            "name": "⚛️ React Client",
+            "path": "./Client2-React"
+        },
+        {
+            "name": "📜 Scripts",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "typescript.preferences.includePackageJsonAutoImports": "auto",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit"
+        },
+        "files.exclude": {
+            "**/node_modules": true,
+            "**/bin": true,
+            "**/obj": true,
+            "**/logs": true,
+            "**/pids": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-dotnettools.csharp",
+            "angular.ng-template",
+            "ms-vscode.vscode-typescript-next",
+            "esbenp.prettier-vscode",
+            "bradlc.vscode-tailwindcss"
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "🚀 Start All Services",
+                "type": "shell",
+                "command": "./start-polimarket.sh",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "new"
+                }
+            },
+            {
+                "label": "🛑 Stop All Services",
+                "type": "shell",
+                "command": "./stop-polimarket.sh",
+                "group": "build"
+            },
+            {
+                "label": "📊 Check Status",
+                "type": "shell",
+                "command": "./status-polimarket.sh --detailed",
+                "group": "test"
+            },
+            {
+                "label": "🔧 Build Backend",
+                "type": "shell",
+                "command": "dotnet build",
+                "options": {
+                    "cwd": "${workspaceFolder}/Backend-CBSE"
+                },
+                "group": "build"
+            },
+            {
+                "label": "🅰️ Build Angular",
+                "type": "shell",
+                "command": "npm run build",
+                "options": {
+                    "cwd": "${workspaceFolder}/Client1-Angular"
+                },
+                "group": "build"
+            },
+            {
+                "label": "⚛️ Build React",
+                "type": "shell",
+                "command": "npm run build",
+                "options": {
+                    "cwd": "${workspaceFolder}/Client2-React"
+                },
+                "group": "build"
+            }
+        ]
+    }
+}

@@ -1,0 +1,415 @@
+<div class="supplier-management-container">
+  <!-- Header -->
+  <div class="header-section">
+    <h1 class="text-center">
+      <i class="pi pi-building text-primary"></i>
+      RF5: Gestión de Proveedores
+    </h1>
+    <p class="text-center text-secondary">
+      Component-Based Software Engineering - Supplier Component
+    </p>
+  </div>
+
+  <!-- Quick Actions -->
+  <p-card class="mb-4 fade-in">
+    <ng-template pTemplate="header">
+      <div class="card-header-content">
+        <h3><i class="pi pi-bolt"></i> Acciones Rápidas</h3>
+        <div class="flex gap-2">
+          <p-button
+            label="Nuevo Proveedor"
+            icon="pi pi-plus"
+            (onClick)="openCreateDialog()"
+            styleClass="p-button-primary"
+          ></p-button>
+          <p-button
+            label="Actualizar Lista"
+            icon="pi pi-refresh"
+            (onClick)="loadSuppliers()"
+            [loading]="isLoading"
+            styleClass="p-button-outlined"
+          ></p-button>
+        </div>
+      </div>
+    </ng-template>
+  </p-card>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid mb-4">
+    <div class="stat-card">
+      <i class="pi pi-building text-blue-500"></i>
+      <div class="stat-content">
+        <h3>{{totalSuppliers}}</h3>
+        <p>Total Proveedores</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <i class="pi pi-check-circle text-green-500"></i>
+      <div class="stat-content">
+        <h3>{{activeSuppliers}}</h3>
+        <p>Activos</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <i class="pi pi-tags text-purple-500"></i>
+      <div class="stat-content">
+        <h3>{{totalCategories}}</h3>
+        <p>Categorías</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <i class="pi pi-star text-orange-500"></i>
+      <div class="stat-content">
+        <h3>{{averageRating}}</h3>
+        <p>Calificación Promedio</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <p-card class="mb-4">
+    <ng-template pTemplate="header">
+      <h3><i class="pi pi-filter"></i> Filtros</h3>
+    </ng-template>
+    
+    <div class="filter-grid">
+      <div class="field">
+        <label for="search">Buscar:</label>
+        <input 
+          pInputText 
+          id="search"
+          [(ngModel)]="searchTerm" 
+          (input)="filterSuppliers()"
+          placeholder="Nombre, contacto o email..."
+          class="w-full"
+        />
+      </div>
+      
+      <div class="field">
+        <label for="category">Categoría:</label>
+        <p-dropdown
+          id="category"
+          [(ngModel)]="categoryFilter"
+          [options]="categoryOptions"
+          (onChange)="filterSuppliers()"
+          placeholder="Seleccionar categoría"
+          class="w-full"
+        ></p-dropdown>
+      </div>
+      
+      <div class="field">
+        <label for="status">Estado:</label>
+        <p-dropdown
+          id="status"
+          [(ngModel)]="statusFilter"
+          [options]="[
+            {label: 'Todos los estados', value: ''},
+            {label: 'Activos', value: 'active'},
+            {label: 'Inactivos', value: 'inactive'}
+          ]"
+          (onChange)="filterSuppliers()"
+          placeholder="Seleccionar estado"
+          class="w-full"
+        ></p-dropdown>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Suppliers List -->
+  <p-card>
+    <ng-template pTemplate="header">
+      <h3><i class="pi pi-list"></i> Lista de Proveedores ({{filteredSuppliers.length}})</h3>
+    </ng-template>
+
+    <p-table
+      [value]="filteredSuppliers"
+      [paginator]="true"
+      [rows]="5"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} proveedores"
+      [rowsPerPageOptions]="[5,10,20]"
+      styleClass="p-datatable-striped"
+      [loading]="isLoading"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="nombre">
+            Nombre <p-sortIcon field="nombre"></p-sortIcon>
+          </th>
+          <th pSortableColumn="contacto">
+            Contacto <p-sortIcon field="contacto"></p-sortIcon>
+          </th>
+          <th>Email</th>
+          <th pSortableColumn="categoria">
+            Categoría <p-sortIcon field="categoria"></p-sortIcon>
+          </th>
+          <th pSortableColumn="calificacion">
+            Calificación <p-sortIcon field="calificacion"></p-sortIcon>
+          </th>
+          <th pSortableColumn="tiempoEntrega">
+            Tiempo Entrega <p-sortIcon field="tiempoEntrega"></p-sortIcon>
+          </th>
+          <th pSortableColumn="activo">
+            Estado <p-sortIcon field="activo"></p-sortIcon>
+          </th>
+          <th>Acciones</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-supplier>
+        <tr>
+          <td>{{supplier.nombre}}</td>
+          <td>{{supplier.contacto}}</td>
+          <td>{{supplier.email}}</td>
+          <td>
+            <p-chip [label]="supplier.categoria"></p-chip>
+          </td>
+          <td>
+            <p-rating 
+              [(ngModel)]="supplier.calificacion" 
+              [readonly]="true" 
+              [cancel]="false"
+            ></p-rating>
+            <small class="ml-2">({{supplier.calificacion}})</small>
+          </td>
+          <td>{{supplier.tiempoEntrega}} días</td>
+          <td>
+            <p-tag 
+              [value]="supplier.activo ? 'Activo' : 'Inactivo'" 
+              [severity]="supplier.activo ? 'success' : 'danger'"
+            ></p-tag>
+          </td>
+          <td>
+            <div class="flex gap-1">
+              <p-button
+                icon="pi pi-pencil"
+                styleClass="p-button-rounded p-button-text p-button-sm"
+                (onClick)="openEditDialog(supplier)"
+                pTooltip="Editar"
+              ></p-button>
+              <p-button
+                *ngIf="supplier.activo"
+                icon="pi pi-times"
+                styleClass="p-button-rounded p-button-danger p-button-sm"
+                (onClick)="deactivateSupplier(supplier)"
+                pTooltip="Desactivar"
+              ></p-button>
+              <p-button
+                *ngIf="!supplier.activo"
+                icon="pi pi-check"
+                styleClass="p-button-rounded p-button-success p-button-sm"
+                (onClick)="activateSupplier(supplier)"
+                pTooltip="Activar"
+              ></p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center">No hay proveedores registrados</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <!-- Create Supplier Dialog -->
+  <p-dialog
+    header="Crear Nuevo Proveedor"
+    [(visible)]="showCreateDialog"
+    [style]="{width: '700px'}"
+    [modal]="true"
+    styleClass="p-fluid"
+  >
+    <div class="formgrid grid">
+      <div class="field col-12 md:col-6">
+        <label for="newNombre">Nombre *</label>
+        <input 
+          pInputText 
+          id="newNombre"
+          [(ngModel)]="newSupplier.nombre" 
+          required
+        />
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="newContacto">Contacto</label>
+        <input 
+          pInputText 
+          id="newContacto"
+          [(ngModel)]="newSupplier.contacto"
+        />
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="newTelefono">Teléfono</label>
+        <input 
+          pInputText 
+          id="newTelefono"
+          [(ngModel)]="newSupplier.telefono"
+        />
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="newEmail">Email *</label>
+        <input 
+          pInputText 
+          id="newEmail"
+          [(ngModel)]="newSupplier.email" 
+          required
+        />
+      </div>
+      
+      <div class="field col-12">
+        <label for="newDireccion">Dirección</label>
+        <textarea 
+          pInputTextarea 
+          id="newDireccion"
+          [(ngModel)]="newSupplier.direccion"
+          rows="2"
+        ></textarea>
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="newCategoria">Categoría *</label>
+        <p-dropdown
+          id="newCategoria"
+          [(ngModel)]="newSupplier.categoria"
+          [options]="categories"
+          placeholder="Seleccionar categoría"
+          [required]="true"
+        ></p-dropdown>
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="newTiempoEntrega">Tiempo de Entrega (días)</label>
+        <p-inputNumber
+          id="newTiempoEntrega"
+          [(ngModel)]="newSupplier.tiempoEntrega"
+          [min]="1"
+          [max]="30"
+          suffix=" días"
+        ></p-inputNumber>
+      </div>
+    </div>
+    
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        (onClick)="showCreateDialog = false"
+        styleClass="p-button-text"
+      ></p-button>
+      <p-button
+        label="Crear"
+        icon="pi pi-check"
+        (onClick)="createSupplier()"
+        [disabled]="!newSupplier.nombre || !newSupplier.email || !newSupplier.categoria"
+      ></p-button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Edit Supplier Dialog -->
+  <p-dialog
+    header="Editar Proveedor"
+    [(visible)]="showEditDialog"
+    [style]="{width: '700px'}"
+    [modal]="true"
+    styleClass="p-fluid"
+  >
+    <div class="formgrid grid" *ngIf="editSupplier">
+      <div class="field col-12 md:col-6">
+        <label for="editNombre">Nombre *</label>
+        <input 
+          pInputText 
+          id="editNombre"
+          [(ngModel)]="editSupplier.nombre" 
+          required
+        />
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="editContacto">Contacto</label>
+        <input 
+          pInputText 
+          id="editContacto"
+          [(ngModel)]="editSupplier.contacto"
+        />
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="editTelefono">Teléfono</label>
+        <input 
+          pInputText 
+          id="editTelefono"
+          [(ngModel)]="editSupplier.telefono"
+        />
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="editEmail">Email *</label>
+        <input 
+          pInputText 
+          id="editEmail"
+          [(ngModel)]="editSupplier.email" 
+          required
+        />
+      </div>
+      
+      <div class="field col-12">
+        <label for="editDireccion">Dirección</label>
+        <textarea 
+          pInputTextarea 
+          id="editDireccion"
+          [(ngModel)]="editSupplier.direccion"
+          rows="2"
+        ></textarea>
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="editCategoria">Categoría *</label>
+        <p-dropdown
+          id="editCategoria"
+          [(ngModel)]="editSupplier.categoria"
+          [options]="categories"
+          placeholder="Seleccionar categoría"
+          [required]="true"
+        ></p-dropdown>
+      </div>
+      
+      <div class="field col-12 md:col-6">
+        <label for="editTiempoEntrega">Tiempo de Entrega (días)</label>
+        <p-inputNumber
+          id="editTiempoEntrega"
+          [(ngModel)]="editSupplier.tiempoEntrega"
+          [min]="1"
+          [max]="30"
+          suffix=" días"
+        ></p-inputNumber>
+      </div>
+    </div>
+    
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        (onClick)="showEditDialog = false"
+        styleClass="p-button-text"
+      ></p-button>
+      <p-button
+        label="Actualizar"
+        icon="pi pi-check"
+        (onClick)="updateSupplier()"
+        [disabled]="!editSupplier.nombre || !editSupplier.email || !editSupplier.categoria"
+      ></p-button>
+    </ng-template>
+  </p-dialog>
+</div>
+
+<!-- Confirmation Dialog -->
+<p-confirmDialog></p-confirmDialog>
+
+<!-- Toast Messages -->
+<p-toast></p-toast>
