@@ -101,7 +101,7 @@ public class SupplierComponent : ISupplierComponent
     {
         _logger.LogDebug("Getting suppliers by category: {Category}", category);
         return await _context.Proveedores
-            .Where(p => p.TipoProveedor.Equals(category, StringComparison.OrdinalIgnoreCase))
+            .Where(p => p.TipoProveedor == category)
             .OrderBy(p => p.Nombre)
             .ToListAsync();
     }

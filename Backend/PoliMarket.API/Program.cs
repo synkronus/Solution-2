@@ -9,6 +9,7 @@ using PoliMarket.Components.Infrastructure.Data;
 using PoliMarket.Components.Sales;
 using PoliMarket.Components.Inventory;
 using PoliMarket.Components.Delivery;
+using PoliMarket.Components.Suppliers;
 using PoliMarket.Contracts;
 using DotNetEnv;
 
@@ -206,6 +207,9 @@ static void RegisterComponentServices(IServiceCollection services)
 
     // Delivery Component
     services.AddScoped<IEntregasComponent, EntregasComponent>();
+
+    // Suppliers Component
+    services.AddScoped<ISupplierComponent, SupplierComponent>();
 
     // Infrastructure Components
     services.AddScoped<IIntegracionComponent, IntegracionComponent>();

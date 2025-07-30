@@ -67,7 +67,7 @@ public class ProveedoresController : ControllerBase
                 return BadRequest(ApiResponse<Proveedor>.ErrorResult("Supplier ID is required"));
             }
 
-            var supplier = _suppliers.FirstOrDefault(s => s.Id == id);
+            var supplier = await _supplierComponent.GetSupplierByIdAsync(id);
             if (supplier == null)
             {
                 return NotFound(ApiResponse<Proveedor>.ErrorResult("Supplier not found"));
@@ -110,10 +110,10 @@ public class ProveedoresController : ControllerBase
             supplier.Activo = true;
             supplier.Calificacion = 0.0;
 
-            // Add to in-memory list (in real implementation, save to database)
-            _suppliers.Add(supplier);
+            // Create supplier using component
+            var createdSupplier = await _supplierComponent.CreateSupplierAsync(supplier);
 
-            var result = ApiResponse<Proveedor>.SuccessResult(supplier, "Supplier created successfully");
+            var result = ApiResponse<Proveedor>.SuccessResult(createdSupplier, "Supplier created successfully");
             return Ok(result);
         }
         catch (Exception ex)
@@ -145,22 +145,11 @@ public class ProveedoresController : ControllerBase
                 return BadRequest(ApiResponse<Proveedor>.ErrorResult("Invalid supplier data"));
             }
 
-            var existingSupplier = _suppliers.FirstOrDefault(s => s.Id == id);
-            if (existingSupplier == null)
-            {
-                return NotFound(ApiResponse<Proveedor>.ErrorResult("Supplier not found"));
-            }
+            // Update supplier using component
+            supplier.Id = id; // Ensure the ID is set
+            var updatedSupplier = await _supplierComponent.UpdateSupplierAsync(supplier);
 
-            // Update properties
-            existingSupplier.Nombre = supplier.Nombre;
-            existingSupplier.Contacto = supplier.Contacto;
-            existingSupplier.Email = supplier.Email;
-            existingSupplier.Telefono = supplier.Telefono;
-            existingSupplier.Direccion = supplier.Direccion;
-            existingSupplier.TipoProveedor = supplier.TipoProveedor;
-            existingSupplier.FechaActualizacion = DateTime.Now;
-
-            var result = ApiResponse<Proveedor>.SuccessResult(existingSupplier, "Supplier updated successfully");
+            var result = ApiResponse<Proveedor>.SuccessResult(updatedSupplier, "Supplier updated successfully");
             return Ok(result);
         }
         catch (Exception ex)
@@ -185,13 +174,12 @@ public class ProveedoresController : ControllerBase
         {
             _logger.LogInformation("Supplier deactivation request: {SupplierId}", id);
 
-            var supplier = _suppliers.FirstOrDefault(s => s.Id == id);
-            if (supplier == null)
+            // Deactivate supplier using component
+            var success = await _supplierComponent.DeactivateSupplierAsync(id);
+            if (!success)
             {
                 return NotFound(ApiResponse<bool>.ErrorResult("Supplier not found"));
             }
-
-            supplier.Activo = false;
 
             var result = ApiResponse<bool>.SuccessResult(true, "Supplier deactivated successfully");
             return Ok(result);
@@ -225,16 +213,16 @@ public class ProveedoresController : ControllerBase
                 return BadRequest(ApiResponse<Proveedor>.ErrorResult("Invalid evaluation data"));
             }
 
-            var supplier = _suppliers.FirstOrDefault(s => s.Id == id);
-            if (supplier == null)
+            // Evaluate supplier using component
+            var success = await _supplierComponent.EvaluateSupplierAsync(id, request.Rating, request.Comentarios);
+            if (!success)
             {
                 return NotFound(ApiResponse<Proveedor>.ErrorResult("Supplier not found"));
             }
 
-            // Update rating (simple average for now)
-            supplier.Calificacion = request.Rating;
-
-            var result = ApiResponse<Proveedor>.SuccessResult(supplier, "Supplier evaluated successfully");
+            // Get updated supplier to return
+            var supplier = await _supplierComponent.GetSupplierByIdAsync(id);
+            var result = ApiResponse<Proveedor>.SuccessResult(supplier!, "Supplier evaluated successfully");
             return Ok(result);
         }
         catch (Exception ex)
@@ -259,24 +247,12 @@ public class ProveedoresController : ControllerBase
         {
             _logger.LogInformation("Supplier performance request: {SupplierId}", id);
 
-            var supplier = _suppliers.FirstOrDefault(s => s.Id == id);
-            if (supplier == null)
+            // Get performance metrics using component
+            var metrics = await _supplierComponent.GetSupplierPerformanceAsync(id);
+            if (metrics == null)
             {
                 return NotFound(ApiResponse<SupplierPerformanceMetrics>.ErrorResult("Supplier not found"));
             }
-
-            // Mock performance metrics
-            var metrics = new SupplierPerformanceMetrics
-            {
-                SupplierId = id,
-                SupplierName = supplier.Nombre,
-                AverageRating = supplier.Calificacion,
-                OnTimeDeliveryRate = 95.5,
-                QualityScore = 4.2,
-                TotalOrders = 25,
-                CompletedOrders = 24,
-                PendingOrders = 1
-            };
 
             var result = ApiResponse<SupplierPerformanceMetrics>.SuccessResult(metrics, "Performance metrics retrieved");
             return Ok(result);
@@ -302,7 +278,8 @@ public class ProveedoresController : ControllerBase
         {
             _logger.LogInformation("Request for suppliers in category: {Category}", category);
 
-            var suppliers = _suppliers.Where(s => s.TipoProveedor.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
+            // Get suppliers by category using component
+            var suppliers = await _supplierComponent.GetSuppliersByCategoryAsync(category);
 
             var result = ApiResponse<List<Proveedor>>.SuccessResult(suppliers, $"Suppliers in category '{category}' retrieved");
             return Ok(result);
@@ -322,20 +299,6 @@ public class SupplierEvaluationRequest
 {
     public double Rating { get; set; }
     public string Comments { get; set; } = string.Empty;
+    public string Comentarios { get; set; } = string.Empty;
     public string EvaluatedBy { get; set; } = string.Empty;
-}
-
-/// <summary>
-/// Supplier performance metrics
-/// </summary>
-public class SupplierPerformanceMetrics
-{
-    public string SupplierId { get; set; } = string.Empty;
-    public string SupplierName { get; set; } = string.Empty;
-    public double AverageRating { get; set; }
-    public double OnTimeDeliveryRate { get; set; }
-    public double QualityScore { get; set; }
-    public int TotalOrders { get; set; }
-    public int CompletedOrders { get; set; }
-    public int PendingOrders { get; set; }
 }
